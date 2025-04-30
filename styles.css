@@ -1,0 +1,333 @@
+:root {
+    --primary-color: #2c7be5;
+    --secondary-color: #6e84a3;
+    --success-color: #00d97e;
+    --danger-color: #e63757;
+    --light-color: #f9fafd;
+    --dark-color: #12263f;
+    --border-color: #e3ebf6;
+    --shadow-color: rgba(18, 38, 63, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-color);
+    background-color: var(--light-color);
+    padding: 20px;
+}
+
+.form-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 5px 20px var(--shadow-color);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.header .logo {
+    height: 50px;
+    margin-bottom: 15px;
+}
+
+.header h1 {
+    color: var(--primary-color);
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.header h2 {
+    color: var(--secondary-color);
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.welcome-message {
+    background-color: rgba(44, 123, 229, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    font-size: 15px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.welcome-message i {
+    color: var(--primary-color);
+    margin-right: 8px;
+}
+
+.parceiro-info {
+    background-color: rgba(44, 123, 229, 0.1);
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 14px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.parceiro-info i {
+    color: var(--primary-color);
+    margin-right: 8px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.required::after {
+    content: " *";
+    color: var(--danger-color);
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 123, 229, 0.2);
+    outline: none;
+}
+
+textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.radio-group, .checkbox-group {
+    margin-top: 10px;
+}
+
+.radio-option, .checkbox-option {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.radio-option input, .checkbox-option input {
+    margin-right: 10px;
+}
+
+.radio-option label, .checkbox-option label {
+    margin-bottom: 0;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radio-option label i, .checkbox-option label i {
+    margin-right: 8px;
+    color: var(--secondary-color);
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 13px;
+    margin-top: 5px;
+    display: none;
+}
+
+.has-error input,
+.has-error textarea,
+.has-error .radio-group,
+.has-error .checkbox-group {
+    border-color: var(--danger-color);
+}
+
+.has-error .error-message {
+    display: block;
+}
+
+.form-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background-color: #1a68d1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button i {
+    margin-right: 8px;
+}
+
+.loading-spinner {
+    display: none;
+    color: var(--primary-color);
+    margin-top: 15px;
+}
+
+.loading-spinner i {
+    margin-right: 8px;
+}
+
+.assistance {
+    margin-top: 40px;
+    font-size: 14px;
+    color: var(--secondary-color);
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.assistance p {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.assistance i {
+    margin-right: 10px;
+    color: var(--primary-color);
+    width: 20px;
+}
+
+.assistance a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.assistance a:hover {
+    text-decoration: underline;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 600px;
+    position: relative;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--secondary-color);
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: var(--dark-color);
+}
+
+.modal h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.modal-body p {
+    margin-bottom: 15px;
+}
+
+.modal-body ul {
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
+    
+    .header h1 {
+        font-size: 24px;
+    }
+    
+    .header h2 {
+        font-size: 18px;
+    }
+    
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    textarea {
+        padding: 10px 12px;
+    }
+    
+    .modal-content {
+        margin: 10% auto;
+        width: 90%;
+    }
+}
