@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         loadingSpinner.style.display = 'block';
 
         try {
-            const response = await fetch('https://script.google.com/macros/library/d/1epWUWNKRazmvHMd3qKzj4Sd_d0pA-HXTbIIF26tu9i_3gB2MlAdM320n/2', {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbwhNgKqf9dR4Rp2Donnb_AEHXnwGhx2AurvtBWwW2c-AdfLC2amKaa1n73NGSSYgaG5/exec', {
                 method: 'POST',
                 body: formData,
             });
