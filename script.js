@@ -1,74 +1,62 @@
 
 document.addEventListener('DOMContentLoaded', function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const parceiroParam = urlParams.get('parceiro');
-    let parceiroNome = 'Anônimo';
+    const parceiroParam = new URLSearchParams(window.location.search).get('parceiro');
+    const parceiroNome = parceiroParam ? decodeURIComponent(parceiroParam) : 'Anônimo';
+    document.getElementById('parceiro').value = parceiroNome;
 
-    if (parceiroParam) {
-        parceiroNome = decodeURIComponent(parceiroParam);
-        document.getElementById('parceiro').value = parceiroNome;
+    const planoSim = document.getElementById('plano-sim');
+    const planoNao = document.getElementById('plano-nao');
+    const campoPlano = document.getElementById('campo-nome-plano');
+    planoSim?.addEventListener('change', () => campoPlano.style.display = 'block');
+    planoNao?.addEventListener('change', () => campoPlano.style.display = 'none');
 
-        const parceiroInfo = document.createElement('div');
-        parceiroInfo.className = 'parceiro-info';
-        parceiroInfo.innerHTML = `<i class="fas fa-handshake"></i> Indicado por: <strong>${parceiroNome}</strong>`;
-        document.querySelector('.welcome-message').appendChild(parceiroInfo);
-
-        document.getElementById('indicacao').checked = true;
-    }
-
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+        el.style.textTransform = 'uppercase';
+        el.addEventListener('input', () => el.value = el.value.toUpperCase());
+    });
     $('#telefone').mask('(00) 00000-0000');
+    const lgpdCheckbox = document.getElementById('lgpd');
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+    lgpdCheckbox.addEventListener('change', () => {
+        submitBtn.disabled = !lgpdCheckbox.checked;
+    });
 
     const form = document.getElementById('uniclanForm');
-    const submitBtn = document.getElementById('submit-btn');
-    const loadingSpinner = document.getElementById('loading-spinner');
-
-    const lgpdLink = document.getElementById('lgpd-link');
-    const lgpdModal = document.getElementById('lgpd-modal');
-    const closeModal = document.querySelector('.close-modal');
-
-    lgpdLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        lgpdModal.style.display = 'block';
-    });
-
-    closeModal.addEventListener('click', () => {
-        lgpdModal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === lgpdModal) lgpdModal.style.display = 'none';
-    });
-
+    const spinner = document.getElementById('loading-spinner');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-
+        spinner.style.display = 'block';
+        submitBtn.style.display = 'none';
         const formData = new FormData(form);
         formData.set('parceiro', parceiroNome);
 
-        submitBtn.style.display = 'none';
-        loadingSpinner.style.display = 'block';
-
         try {
-            const response = await fetch('https://script.google.com/macros/s/AKfycbwhNgKqf9dR4Rp2Donnb_AEHXnwGhx2AurvtBWwW2c-AdfLC2amKaa1n73NGSSYgaG5/exec', {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbxgAU2MwTm0TAGP0_2gBMVf_4_N8pfbZLyzbHLlDuN7oyEfyTYwpHd-NYFCwH5fs82S/exec', {
                 method: 'POST',
                 body: formData,
             });
-
-            const text = await response.text();
-
-            if (text.toLowerCase().includes('ok')) {
-                alert('Cadastro enviado com sucesso!');
+            const result = await response.text();
+            if (result.toLowerCase().includes('ok')) {
+                const nome = form.get('nome');
+                const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!`;
+                const urlZap = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
+                if (confirm("Cadastro enviado com sucesso! Deseja falar com a equipe via WhatsApp?")) {
+                    window.location.href = urlZap;
+                } else {
+                    alert("Obrigado! Em breve entraremos em contato.");
+                }
                 form.reset();
+                campoPlano.style.display = 'none';
             } else {
-                throw new Error('Erro inesperado: ' + text);
+                alert("Erro inesperado: " + result);
             }
-
-        } catch (error) {
-            console.error(error);
-            alert('Erro ao enviar formulário. Tente novamente.');
+        } catch (err) {
+            alert("Erro ao enviar. Tente novamente.");
         } finally {
-            submitBtn.style.display = 'inline-flex';
-            loadingSpinner.style.display = 'none';
+            spinner.style.display = 'none';
+            submitBtn.style.display = 'inline-block';
+            submitBtn.disabled = true;
         }
     });
 });
