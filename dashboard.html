@@ -158,7 +158,9 @@
       document.getElementById("erro").textContent = "Adicione ?parceiro=nome na URL.";
     } else {
       // Substitua pela URL do seu Apps Script
-      const url = `https://script.google.com/macros/s/AKfycbxyOwUh5_VoVW19owJppkTLwaOnsMkOdjb91NEdh1E7pCOXXc_-0CS2x13qjg0vVic/exec?parceiro=${parceiroURL}`;
+
+      const url = `https://script.google.com/macros/s/AKfycby5rzVO1aAocelWbTmyLxuj6Ej06ZTljeq07tXKgWgomzHGXqb_Jqw9K9XBT2aviXno/exec?parceiro=${parceiroURL}`;
+
 
       fetch(url)
         .then(response => response.json())
