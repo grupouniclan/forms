@@ -29,7 +29,63 @@
         <input type="text" id="nome" name="nome" required />
       </div>
 
-      <!-- ... (outros campos do formulário mantidos conforme original) ... -->
+      <div class="form-group">
+        <label for="telefone" class="required">Telefone / WhatsApp</label>
+        <input type="tel" id="telefone" name="telefone" required />
+      </div>
+
+      <div class="form-group">
+        <label for="cidade" class="required">Cidade</label>
+        <input type="text" id="cidade" name="cidade" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="required">E-mail</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label class="required">Já possui outro plano?</label>
+        <div class="radio-inline">
+          <label><input type="radio" id="plano-sim" name="temPlano" value="Sim" /> Sim</label>
+          <label><input type="radio" id="plano-nao" name="temPlano" value="Não" /> Não</label>
+        </div>
+      </div>
+
+      <div class="form-group" id="campo-nome-plano" style="display:none;">
+        <label for="plano">Qual o nome do plano?</label>
+        <input type="text" id="plano" name="plano" />
+      </div>
+
+      <div class="form-group">
+        <label class="required">Como conheceu o plano?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="conheceu" value="Indicação" /> Indicação</label>
+          <label><input type="radio" name="conheceu" value="Rede Social" /> Rede Social</label>
+          <label><input type="radio" name="conheceu" value="Google" /> Google</label>
+          <label><input type="radio" name="conheceu" value="Outro" /> Outro</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="required">Como prefere ser contatado?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="contato" value="Ligação" /> Ligação</label>
+          <label><input type="radio" name="contato" value="WhatsApp" /> WhatsApp</label>
+          <label><input type="radio" name="contato" value="Email" /> Email</label>
+          <label><input type="radio" name="contato" value="Indiferente" /> Indiferente</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="observacao">Observações:</label>
+        <textarea name="observacao" id="observacao"></textarea>
+      </div>
+
+      <div class="form-group">
+        <input type="checkbox" id="lgpd" name="lgpd" required />
+        <label for="lgpd">Li e aceito a Política de Privacidade</label>
+      </div>
 
       <div class="form-actions">
         <button type="submit" id="submit-btn" disabled>Enviar</button>
@@ -40,24 +96,13 @@
     </form>
   </div>
 
-  <!-- MODAIS -->
+  <!-- MODAIS (MANTIDOS PARA FUTURAS IMPLEMENTAÇÕES) -->
   <div id="whatsappModal" class="modal">
-    <div class="modal-content">
-      <h3>Contato via WhatsApp</h3>
-      <p>Cadastro enviado com sucesso! Deseja falar com a equipe via WhatsApp?</p>
-      <div class="modal-buttons">
-        <button id="modalSim">Sim</button>
-        <button id="modalNao">Não</button>
-      </div>
-    </div>
+    <!-- Conteúdo mantido, mas não utilizado no fluxo atual -->
   </div>
 
   <div id="obrigadoModal" class="modal">
-    <div class="modal-content">
-      <h3>Obrigado!</h3>
-      <p>Em breve entraremos em contato. 😊</p>
-      <button id="fecharModal">Fechar</button>
-    </div>
+    <!-- Conteúdo mantido, mas não utilizado no fluxo atual -->
   </div>
 
   <!-- SCRIPTS -->

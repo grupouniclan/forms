@@ -1,4 +1,3 @@
-/* ESTILOS GERAIS */
 :root {
   --primary-color: #2c7be5;
   --secondary-color: #6e84a3;
@@ -24,26 +23,57 @@ body {
   padding: 20px;
 }
 
-/* FORMULÁRIO */
+/* CONTAINER DO FORMULÁRIO */
 .form-container {
   background-color: white;
   border-radius: 10px;
   padding: 30px;
   box-shadow: 0 5px 20px var(--shadow-color);
   max-width: 800px;
-  margin: 0 auto;
+  margin: 20px auto;
 }
 
+/* BANNER */
+.banner-topo {
+  width: 100%;
+  margin-bottom: 25px;
+}
+.banner-topo img.banner-img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+}
+
+/* MENSAGEM DE BOAS-VINDAS */
+.welcome-message {
+  background-color: rgba(44, 123, 229, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  font-size: 15px;
+  border-left: 4px solid var(--primary-color);
+}
+.welcome-message i {
+  color: var(--primary-color);
+  margin-right: 8px;
+}
+
+/* GRUPOS DE CAMPOS */
 .form-group {
   margin-bottom: 25px;
 }
-
-label {
+.form-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
 }
+.required::after {
+  content: " *";
+  color: var(--danger-color);
+}
 
+/* CAMPOS DE ENTRADA */
 input[type="text"],
 input[type="tel"],
 input[type="email"],
@@ -53,40 +83,69 @@ textarea {
   border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 15px;
+  transition: all 0.3s;
   text-transform: uppercase;
 }
+input:focus, textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(44, 123, 229, 0.2);
+  outline: none;
+}
+textarea {
+  height: 120px;
+  resize: vertical;
+}
 
-/* MODAIS */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  justify-content: center;
+/* RADIO BUTTONS */
+.radio-inline {
+  display: flex;
+  gap: 20px;
   align-items: center;
-  z-index: 1000;
+  margin-top: 8px;
+}
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
+/* BOTÃO DE ENVIO */
+.form-actions {
+  margin-top: 30px;
   text-align: center;
-  max-width: 400px;
-  margin: 20px;
 }
-
-.modal-buttons button {
-  margin: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
+button {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 5px;
+  padding: 14px 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+button:hover {
+  background-color: #1a68d1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
 }
 
-/* ... (outros estilos mantidos conforme necessário) ... */
+/* SPINNER DE CARREGAMENTO */
+.loading-spinner {
+  color: var(--primary-color);
+  margin-top: 15px;
+  display: none;
+}
+.loading-spinner i {
+  margin-right: 8px;
+}
+
+/* MODAIS (MANTIDOS, MAS NÃO UTILIZADOS) */
+.modal {
+  display: none;
+}

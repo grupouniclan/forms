@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Configuração inicial
+    // Configuração inicial do parceiro
     const parceiroParam = new URLSearchParams(window.location.search).get('parceiro');
     const parceiroNome = parceiroParam ? decodeURIComponent(parceiroParam) : 'Anônimo';
     document.getElementById('parceiro').value = parceiroNome;
@@ -55,15 +55,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Resposta do servidor:', result);
 
                 if (result.toLowerCase().includes('ok')) {
-                    // Prepara mensagem para WhatsApp
+                    // Prepara e redireciona para o WhatsApp
                     const nome = formData.get('nome');
                     const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!`;
                     const urlZap = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
-
-                    // Direciona para o WhatsApp após 1 segundo (opcional)
-                    setTimeout(() => {
-                        window.location.href = urlZap;
-                    }, 1000); // 👈 Ajuste o tempo conforme necessário
+                    window.location.href = urlZap;
 
                     // Reseta o formulário
                     form.reset();
@@ -75,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (err) {
                 console.error('Erro:', err);
-                alert('Erro na conexão. Tente novamente.');
+                alert('Erro na conexão. Verifique sua internet.');
             } finally {
                 spinner.style.display = 'none';
                 submitBtn.style.display = 'inline-block';
