@@ -151,57 +151,57 @@
   </div>
 
   <script>
-    const parceiroURL = new URLSearchParams(window.location.search).get('parceiro');
-    document.getElementById("nome-parceiro").textContent = parceiroURL || "Desconhecido";
+  const parceiroURL = new URLSearchParams(window.location.search).get('parceiro');
+  document.getElementById("nome-parceiro").textContent = parceiroURL || "Desconhecido";
 
-    if (!parceiroURL) {
-      document.getElementById("erro").textContent = "Adicione ?parceiro=nome na URL.";
-    } else {
-      // Substitua pela URL do seu Apps Script
+  if (!parceiroURL) {
+    document.getElementById("erro").textContent = "Adicione ?parceiro=nome na URL.";
+  } else {
+    const url = `https://script.google.com/macros/s/AKfycby5rzVO1aAocelWbTmyLxuj6Ej06ZTljeq07tXKgWgomzHGXqb_Jqw9K9XBT2aviXno/exec?parceiro=${parceiroURL}`;
 
-      const url = `https://script.google.com/macros/s/AKfycby5rzVO1aAocelWbTmyLxuj6Ej06ZTljeq07tXKgWgomzHGXqb_Jqw9K9XBT2aviXno/exec?parceiro=${parceiroURL}`;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.erro) {
+          document.getElementById("erro").textContent = data.erro;
+        } else {
+          const total = data.length;
+          const totalFechado = data.filter(d => d.STATUS?.toLowerCase() === "fechado").length;
+          const totalNaoFechado = data.filter(d => d.STATUS?.toLowerCase() === "não fechado").length;
 
+          document.getElementById("total-indicacoes").textContent = total;
+          document.getElementById("total-fechado").textContent = totalFechado;
+          document.getElementById("total-nao-fechado").textContent = totalNaoFechado;
 
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          if (data.erro) {
-            document.getElementById("erro").textContent = data.erro;
-          } else {
-            const total = data.length;
-            const totalFechado = data.filter(d => d.STATUS.toLowerCase() === "fechado").length;
-            const totalNaoFechado = data.filter(d => d.STATUS.toLowerCase() === "não fechado").length;
+          const camposDesejados = ["DATA/HORA", "NOME", "TELEFONE", "CIDADE", "PARCEIRO", "STATUS"];
 
-            document.getElementById("total-indicacoes").textContent = total;
-            document.getElementById("total-fechado").textContent = totalFechado;
-            document.getElementById("total-nao-fechado").textContent = totalNaoFechado;
+          const tabela = document.createElement("table");
+          const thead = tabela.createTHead();
+          const headerRow = thead.insertRow();
 
-            const tabela = document.createElement("table");
-            const thead = tabela.createTHead();
-            const headerRow = thead.insertRow();
+          camposDesejados.forEach(campo => {
+            const th = document.createElement("th");
+            th.textContent = campo;
+            headerRow.appendChild(th);
+          });
 
-            Object.keys(data[0]).forEach(key => {
-              const th = document.createElement("th");
-              th.textContent = key;
-              headerRow.appendChild(th);
+          const tbody = tabela.createTBody();
+          data.forEach(item => {
+            const row = tbody.insertRow();
+            camposDesejados.forEach(campo => {
+              const cell = row.insertCell();
+              cell.textContent = item[campo] || "";
             });
+          });
 
-            const tbody = tabela.createTBody();
-            data.forEach(item => {
-              const row = tbody.insertRow();
-              Object.values(item).forEach(valor => {
-                const cell = row.insertCell();
-                cell.textContent = valor;
-              });
-            });
-
-            document.getElementById("tabela-container").appendChild(tabela);
-          }
-        })
-        .catch(error => {
-          document.getElementById("erro").textContent = "Erro ao carregar os dados.";
-        });
-    }
-  </script>
+          document.getElementById("tabela-container").appendChild(tabela);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        document.getElementById("erro").textContent = "Erro ao carregar os dados.";
+      });
+  }
+</script>
 </body>
 </html>
