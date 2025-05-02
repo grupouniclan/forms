@@ -40,18 +40,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const formData = new FormData(form);
         formData.set('parceiro', parceiroNome);
 
+        // Captura o valor do plano (SIM/NÃO)
+        const temPlano = document.querySelector('input[name="temPlano"]:checked')?.value || 'Não';
+        formData.set('temPlano', temPlano);
+
+        // Limpa o campo "plano" se for "Não"
+        if (temPlano === 'Não') {
+            formData.set('plano', '');
+        }
+
         try {
             // Envia dados para o Google Sheets
-            const response = await fetch('https://script.google.com/macros/s/AKfycbxgAU2MwTm0TAGP0_2gBMVf_4_N8pfbZLyzbHLlDuN7oyEfyTYwpHd-NYFCwH5fs82S/exec', {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec', {
                 method: 'POST',
                 body: formData,
             });
             
             const result = await response.text();
-            console.log('Resposta do servidor:', result); // 👈 Para depuração
+            console.log('Resposta do servidor:', result);
 
             if (result.toLowerCase().includes('ok')) {
-                // Prepara mensagem para WhatsApp
                 const nome = form.get('nome');
                 const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!`;
                 const urlZap = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
@@ -60,11 +68,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const whatsappModal = document.getElementById('whatsappModal');
                 const obrigadoModal = document.getElementById('obrigadoModal');
 
-                // Mostra modal de confirmação
                 if (whatsappModal && obrigadoModal) {
                     whatsappModal.style.display = 'flex';
 
-                    // Configura ações dos botões
                     document.getElementById('modalSim').onclick = () => {
                         whatsappModal.style.display = 'none';
                         window.location.href = urlZap;
@@ -74,23 +80,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         whatsappModal.style.display = 'none';
                         obrigadoModal.style.display = 'flex';
                     };
-                } else {
-                    console.error('Elementos dos modais não encontrados!');
                 }
 
                 // Reset do formulário
                 form.reset();
                 campoPlano.style.display = 'none';
-                lgpdCheckbox.checked = false; // Reset do checkbox LGPD
-
+                lgpdCheckbox.checked = false;
             } else {
-                alert(`Erro no servidor: ${result}`);
+                alert('Erro no servidor: ' + result);
             }
         } catch (err) {
-            console.error('Erro completo:', err); // 👈 Log detalhado
+            console.error('Erro completo:', err);
             alert('Falha na conexão. Verifique sua internet e tente novamente.');
         } finally {
-            // Restaura estado inicial
             spinner.style.display = 'none';
             submitBtn.style.display = 'inline-block';
             submitBtn.disabled = true;

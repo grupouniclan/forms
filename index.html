@@ -14,96 +14,94 @@
     <img src="Fundo.jpg" alt="Cuidado com a Família" class="banner-img" />
   </div>
 
-    <!-- MENSAGEM DE BOAS-VINDAS -->
-    <div class="welcome-message">
-      <p><i class="fas fa-heart"></i> Seja bem-vindo(a) ao Grupo Uniclan!</p>
-      <p>Preencha todos os campos com atenção. Seus dados serão tratados com confidencialidade e segurança, conforme a LGPD.</p>
+  <!-- MENSAGEM DE BOAS-VINDAS -->
+  <div class="welcome-message">
+    <p><i class="fas fa-heart"></i> Seja bem-vindo(a) ao Grupo Uniclan!</p>
+    <p>Preencha todos os campos com atenção. Seus dados serão tratados com confidencialidade e segurança, conforme a LGPD.</p>
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <form id="uniclanForm">
+    <input type="hidden" name="parceiro" id="parceiro" />
+
+    <label for="nome">Nome completo</label>
+    <input type="text" id="nome" name="nome" required />
+
+    <label for="telefone">Telefone / WhatsApp</label>
+    <input type="tel" id="telefone" name="telefone" required />
+
+    <label for="cidade">Cidade</label>
+    <input type="text" id="cidade" name="cidade" required />
+
+    <label for="email">E-mail</label>
+    <input type="email" id="email" name="email" required />
+
+    <div class="form-group">
+      <label class="required">Já possui outro plano?</label>
+      <div class="radio-inline">
+        <label><input type="radio" id="plano-sim" name="temPlano" value="Sim" /> Sim</label>
+        <label><input type="radio" id="plano-nao" name="temPlano" value="Não" /> Não</label>
+      </div>
     </div>
 
-    <!-- FORMULÁRIO -->
-    <form id="uniclanForm">
-      <input type="hidden" name="parceiro" id="parceiro" />
+    <div class="form-group" id="campo-nome-plano" style="display:none;">
+      <label for="plano">Qual o nome do plano?</label>
+      <input type="text" id="plano" name="plano" />
+    </div>
 
-      <label for="nome">Nome completo</label>
-      <input type="text" id="nome" name="nome" required />
+    <label>Como conheceu o plano?</label><br />
+    <input type="radio" name="conheceu" value="Indicação" /> Indicação
+    <input type="radio" name="conheceu" value="Rede Social" /> Rede Social
+    <input type="radio" name="conheceu" value="Google" /> Google
+    <input type="radio" name="conheceu" value="Outro" /> Outro
 
-      <label for="telefone">Telefone / WhatsApp</label>
-      <input type="tel" id="telefone" name="telefone" required />
+    <label>Como prefere ser contatado?</label><br />
+    <input type="radio" name="contato" value="Ligação" /> Ligação
+    <input type="radio" name="contato" value="WhatsApp" /> WhatsApp
+    <input type="radio" name="contato" value="Email" /> Email
+    <input type="radio" name="contato" value="Indiferente" /> Indiferente
 
-      <label for="cidade">Cidade</label>
-      <input type="text" id="cidade" name="cidade" required />
+    <label for="observacao">Observações:</label>
+    <textarea name="observacao" id="observacao"></textarea>
 
-      <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" required />
-	
-	<div class="form-group">
-  	  <label class="required">Já possui outro plano?</label>
-  	     <div class="radio-inline">
-    		<label><input type="radio" id="plano-sim" name="temPlano" value="Sim" /> Sim</label>
-    		<label><input type="radio" id="plano-nao" name="temPlano" value="Não" /> Não</label>
- 	     </div>
-       </div>
-  
-      <div class="form-group" id="campo-nome-plano" style="display:none;">
-        <label for="plano">Qual o nome do plano?</label>
-        <input type="text" id="plano" name="plano" />
-      </div>
+    <input type="checkbox" id="lgpd" name="lgpd" required />
+    <label for="lgpd">Li e aceito a Política de Privacidade</label><br /><br />
 
-      <label>Como conheceu o plano?</label><br />
-      <input type="radio" name="conheceu" value="Indicação" /> Indicação
-      <input type="radio" name="conheceu" value="Rede Social" /> Rede Social
-      <input type="radio" name="conheceu" value="Google" /> Google
-      <input type="radio" name="conheceu" value="Outro" /> Outro
+    <button type="submit" id="submit-btn" disabled>Enviar</button>
+    <div class="loading-spinner" id="loading-spinner" style="display:none;">
+      <i class="fas fa-spinner fa-spin"></i> Enviando...
+    </div>
+  </form>
 
-      <label>Como prefere ser contatado?</label><br />
-      <input type="radio" name="contato" value="Ligação" /> Ligação
-      <input type="radio" name="contato" value="WhatsApp" /> WhatsApp
-      <input type="radio" name="contato" value="Email" /> Email
-      <input type="radio" name="contato" value="Indiferente" /> Indiferente
+  <!-- RODAPÉ COM CONTATO E LOGO -->
+  <div class="assistance-footer">
+    <div class="contato-info">
+      <p><i class="fas fa-phone"></i> <a href="tel:1433022681">(14) 3302-2681</a> (ligação ou WhatsApp)</p>
+    </div>
+    <div class="logo-footer">
+      <img src="uniplan.jpg" alt="Logo Uniclan" />
+    </div>
+  </div>
 
-      <label for="observacao">Observações:</label>
-      <textarea name="observacao" id="observacao"></textarea>
-
-      <input type="checkbox" id="lgpd" name="lgpd" required />
-      <label for="lgpd">Li e aceito a Política de Privacidade</label><br /><br />
-
-      <button type="submit" id="submit-btn" disabled>Enviar</button>
-      <div class="loading-spinner" id="loading-spinner" style="display:none;">
-        <i class="fas fa-spinner fa-spin"></i> Enviando...
-      </div>
-    </form>
-
-    <!-- RODAPÉ COM CONTATO E LOGO -->
-    <div class="assistance-footer">
-      <div class="contato-info">
-        <p><i class="fas fa-phone"></i> <a href="tel:1433022681">(14) 3302-2681</a> (ligação ou WhatsApp)</p>
-      </div>
-      <div class="logo-footer">
-        <img src="uniplan.jpg" alt="Logo Uniclan" />
+  <!-- Modais -->
+  <div id="whatsappModal" class="modal">
+    <div class="modal-content">
+      <h3>Contato via WhatsApp</h3>
+      <p>Cadastro enviado com sucesso! Deseja falar com a equipe via WhatsApp?</p>
+      <div class="modal-buttons">
+        <button id="modalSim">Sim</button>
+        <button id="modalNao">Não</button>
       </div>
     </div>
   </div>
 
-<!-- Modal de Confirmação -->
-<div id="whatsappModal" class="modal">
-  <div class="modal-content">
-    <h3>Contato via WhatsApp</h3>
-    <p>Cadastro enviado com sucesso! Deseja falar com a equipe via WhatsApp?</p>
-    <div class="modal-buttons">
-      <button id="modalSim">Sim</button>
-      <button id="modalNao">Não</button>
+  <div id="obrigadoModal" class="modal">
+    <div class="modal-content">
+      <h3>Obrigado!</h3>
+      <p>Em breve entraremos em contato. 😊</p>
+      <button id="fecharModal">Fechar</button>
     </div>
   </div>
-</div>
-
-<!-- Modal de Agradecimento -->
-<div id="obrigadoModal" class="modal">
-  <div class="modal-content">
-    <h3>Obrigado!</h3>
-    <p>Em breve entraremos em contato. 😊</p>
-    <button id="fecharModal">Fechar</button>
-  </div>
-</div>
 
   <!-- SCRIPTS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
