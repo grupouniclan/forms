@@ -45,42 +45,33 @@ document.addEventListener('DOMContentLoaded', function () {
             if (temPlano === 'Não') formData.set('plano', '');
 
             try {
+                // Envia dados para o Google Sheets
                 const response = await fetch('https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec', {
                     method: 'POST',
                     body: formData,
                 });
                 
                 const result = await response.text();
-                console.log('Resposta:', result);
+                console.log('Resposta do servidor:', result);
 
                 if (result.toLowerCase().includes('ok')) {
+                    // Prepara mensagem para WhatsApp
                     const nome = formData.get('nome');
                     const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!`;
                     const urlZap = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
 
-                    // Controle dos modais
-                    const whatsappModal = document.getElementById('whatsappModal');
-                    const obrigadoModal = document.getElementById('obrigadoModal');
-                    
-                    if (whatsappModal) {
-                        whatsappModal.style.display = 'flex';
-                        document.getElementById('modalSim').onclick = () => {
-                            window.location.href = urlZap;
-                            whatsappModal.style.display = 'none';
-                        };
-                        document.getElementById('modalNao').onclick = () => {
-                            whatsappModal.style.display = 'none';
-                            if (obrigadoModal) obrigadoModal.style.display = 'flex';
-                        };
-                    }
+                    // Direciona para o WhatsApp após 1 segundo (opcional)
+                    setTimeout(() => {
+                        window.location.href = urlZap;
+                    }, 1000); // 👈 Ajuste o tempo conforme necessário
 
-                    // Reset do formulário
+                    // Reseta o formulário
                     form.reset();
                     if (campoPlano) campoPlano.style.display = 'none';
                     if (lgpdCheckbox) lgpdCheckbox.checked = false;
 
                 } else {
-                    alert('Erro: ' + result);
+                    alert('Erro no servidor: ' + result);
                 }
             } catch (err) {
                 console.error('Erro:', err);
