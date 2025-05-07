@@ -3,13 +3,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const parceiroParam = urlParams.get('parceiro');
     let parceiroNome = 'Anônimo';
-    
-    // Elementos do DOM
+
+    // Elementos DOM
     const form = document.getElementById('uniclanForm');
     const submitBtn = document.getElementById('submit-btn');
     const loadingSpinner = document.getElementById('loading-spinner');
     const lgpdCheckbox = document.getElementById('lgpd');
-    const campoPlano = document.querySelector('.campo-plano');
+    const campoPlano = document.getElementById('campo-nome-plano');
+    const planoSim = document.getElementById('plano-sim');
+    const planoNao = document.getElementById('plano-nao');
 
     // Configura parceiro
     if (parceiroParam) {
@@ -52,52 +54,68 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Controle de exibição do campo de plano
-    document.querySelectorAll('input[name="temPlano"]').forEach(input => {
-        input.addEventListener('change', () => {
-            campoPlano.style.display = input.value === 'Sim' ? 'block' : 'none';
-        });
-    });
+    // Controle do campo de plano
+    function toggleCampoPlano() {
+        campoPlano.style.display = planoSim.checked ? 'block' : 'none';
+    }
 
-    // Submit do formulário
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    if (planoSim && planoNao && campoPlano) {
+        // Configura estado inicial
+        toggleCampoPlano();
+        
+        // Adiciona listeners
+        planoSim.addEventListener('change', toggleCampoPlano);
+        planoNao.addEventListener('change', toggleCampoPlano);
+    }
 
-        submitBtn.style.display = 'none';
-        loadingSpinner.style.display = 'block';
+    // Envio do formulário
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loadingSpinner.style.display = 'block';
+            submitBtn.style.display = 'none';
+            
+            const formData = new FormData(form);
+            formData.set('parceiro', parceiroNome);
 
-        const formData = new FormData(form);
-        formData.set('parceiro', parceiroNome);
+            // Captura valor do plano
+            const temPlano = document.querySelector('input[name="temPlano"]:checked')?.value || 'Não';
+            formData.set('temPlano', temPlano);
+            if (temPlano === 'Não') formData.set('plano', '');
 
-        // Captura dados condicionais do plano
-        const temPlano = document.querySelector('input[name="temPlano"]:checked')?.value || 'Não';
-        formData.set('temPlano', temPlano);
-        if (temPlano === 'Não') formData.set('plano', '');
-
-        try {
-            const response = await fetch('SUA_URL_GOOGLE_SCRIPT', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.text();
-            if (result.toLowerCase().includes('ok')) {
-                const nome = formData.get('nome');
-                const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!`;
-                window.location.href = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
+            try {
+                // Envia para Google Sheets
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec', {
+                    method: 'POST',
+                    body: formData,
+                });
                 
-                form.reset();
-                campoPlano.style.display = 'none';
-                if (lgpdCheckbox) lgpdCheckbox.checked = false;
-            } else {
-                alert('Erro no servidor: ' + result);
+                const result = await response.text();
+                console.log('Resposta do servidor:', result);
+
+                if (result.toLowerCase().includes('ok')) {
+                    // Redireciona para WhatsApp
+                    const nome = formData.get('nome');
+                    const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!#Form`;
+                    const urlZap = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
+                    window.location.href = urlZap;
+
+                    // Reset do formulário
+                    form.reset();
+                    campoPlano.style.display = 'none';
+                    if (lgpdCheckbox) lgpdCheckbox.checked = false;
+
+                } else {
+                    alert('Erro no servidor: ' + result);
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro na conexão. Verifique sua internet.');
+            } finally {
+                loadingSpinner.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+                submitBtn.disabled = true;
             }
-        } catch (err) {
-            console.error('Erro:', err);
-            alert('Erro na conexão. Verifique sua internet.');
-        } finally {
-            loadingSpinner.style.display = 'none';
-            submitBtn.style.display = 'inline-block';
-        }
-    });
+        });
+    }
 });

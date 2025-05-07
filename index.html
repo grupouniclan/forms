@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,16 +7,18 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-    <div class="banner-topo">
-        <img src="Fundo.jpg" alt="Cuidado com a Família" class="banner-img" />
-    </div>
+<body>   
+  <!-- IMAGEM DESTAQUE -->
+  <div class="banner-topo">
+    <img src="Fundo.png" alt="Cuidado com a Família" class="banner-img" />
+  </div>
 
-    <div class="form-container">
-        <div class="welcome-message">
-            <p><i class="fas fa-heart"></i> Seja bem-vindo(a) ao Grupo Uniclan!</p>
-            <p>Preencha todos os campos com atenção. Seus dados serão tratados com confidencialidade e segurança, conforme a LGPD.</p>
-        </div>
+  <!-- FORMULÁRIO -->
+  <div class="form-container">
+    <div class="welcome-message">
+      <p><i class="fas fa-heart"></i> Seja bem-vindo(a) ao Grupo Uniclan!</p>
+      <p>Preencha todos os campos com atenção. Seus dados serão tratados com confidencialidade e segurança, conforme a LGPD.</p>
+    </div>
         
         <form id="uniclanForm" novalidate>
             <input type="hidden" id="parceiro" name="parceiro">
@@ -45,11 +46,27 @@
                 <input type="email" id="email" name="email" required>
                 <div class="error-message" id="email-error"></div>
             </div>
-            
-            <div class="form-group">
-                <label for="plano">Já possui outro Plano? Qual?</label>
-                <input type="text" id="plano" name="plano">
-            </div>
+
+		<div class="form-group">
+    <label>Possui plano de saúde? *</label>
+    <div class="radio-group">
+        <label>
+            <input type="radio" name="temPlano" id="plano-sim" value="Sim" required> Sim
+        </label>
+        <label>
+            <input type="radio" name="temPlano" id="plano-nao" value="Não" required> Não
+        </label>
+    </div>
+</div>
+
+<div id="campo-nome-plano" class="form-group" style="display: none;">
+    <label>Qual plano você possui?</label>
+    <input type="text" name="plano" placeholder="Ex: Bradesco Saúde, Amil, etc.">
+</div>
+
+
+
+
             
             <div class="form-group radio-container">
                 <label class="required">Como conheceu o Plano?</label>
@@ -121,7 +138,7 @@
         <div class="assistance">
             <p><i class="fas fa-info-circle"></i> Dúvidas ou assistência:</p>
             <p><i class="fas fa-envelope"></i> <a href="mailto:gpuniclanmarketing@gmail.com">gpuniclanmarketing@gmail.com</a></p>
-            <p><i class="fas fa-phone"></i> <a href="tel:1433022680">(14) 3302-2680</a></p>
+            <p><i class="fas fa-phone"></i> <a href="tel:1433022681">(14) 3302-2681</a></p>
         </div>
     </div>
 

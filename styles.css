@@ -234,3 +234,17 @@ button:disabled {
     padding: 10px;
   }
 }
+
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.radio-option label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
