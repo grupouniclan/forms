@@ -13,6 +13,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const planoSim = document.getElementById('plano-sim');
     const planoNao = document.getElementById('plano-nao');
 
+    // Lista de campos obrigatórios
+    const CAMPOS_OBRIGATORIOS = [
+        { id: 'nome', mensagem: 'Por favor, digite seu nome completo' },
+        { id: 'telefone', mensagem: 'Preencha seu telefone completo' },
+        { id: 'cidade', mensagem: 'Informe sua cidade' },
+        { id: 'email', mensagem: 'Digite um e-mail válido' },
+        { 
+            tipo: 'radio', 
+            name: 'temPlano', 
+            mensagem: 'Selecione se possui plano de saúde' 
+        },
+        { 
+            tipo: 'radio', 
+            name: 'contatoPreferido', 
+            mensagem: 'Escolha como prefere ser contatado' 
+        }
+    ];
+
     // Configura parceiro
     if (parceiroParam) {
         parceiroNome = decodeURIComponent(parceiroParam);
@@ -57,54 +75,119 @@ document.addEventListener('DOMContentLoaded', function () {
     // Controle do campo de plano
     function toggleCampoPlano() {
         campoPlano.style.display = planoSim.checked ? 'block' : 'none';
+        document.getElementById('plano').required = planoSim.checked;
     }
 
     if (planoSim && planoNao && campoPlano) {
-        // Configura estado inicial
         toggleCampoPlano();
-        
-        // Adiciona listeners
         planoSim.addEventListener('change', toggleCampoPlano);
         planoNao.addEventListener('change', toggleCampoPlano);
+    }
+
+    // Sistema de validação
+    function validarCampo(elemento) {
+        if (elemento.id === 'telefone') {
+            return $('#telefone').mask.mask.isComplete();
+        }
+        return elemento.value.trim() !== '';
+    }
+
+    function validarRadio(radios) {
+        return Array.from(radios).some(r => r.checked);
+    }
+
+    function mostrarErro(elemento, mensagem) {
+        elemento.classList.add('campo-invalido');
+        const erro = document.createElement('span');
+        erro.className = 'erro-validacao';
+        erro.textContent = mensagem;
+        elemento.parentNode.insertBefore(erro, elemento.nextSibling);
+    }
+
+    function mostrarErroRadio(radios, mensagem) {
+        const container = radios[0].closest('.form-group');
+        container.classList.add('campo-invalido');
+        const erro = document.createElement('span');
+        erro.className = 'erro-validacao';
+        erro.textContent = mensagem;
+        container.appendChild(erro);
+    }
+
+    function resetarErros() {
+        document.querySelectorAll('.campo-invalido').forEach(el => {
+            el.classList.remove('campo-invalido');
+            const erros = el.querySelectorAll('.erro-validacao');
+            erros.forEach(erro => erro.remove());
+        });
+    }
+
+    function validarFormulario() {
+        let valido = true;
+        resetarErros();
+
+        CAMPOS_OBRIGATORIOS.forEach(campo => {
+            if (campo.tipo === 'radio') {
+                const radios = document.getElementsByName(campo.name);
+                if (!validarRadio(radios)) {
+                    mostrarErroRadio(radios, campo.mensagem);
+                    valido = false;
+                }
+            } else {
+                const elemento = document.getElementById(campo.id);
+                if (!validarCampo(elemento)) {
+                    mostrarErro(elemento, campo.mensagem);
+                    valido = false;
+                }
+            }
+        });
+
+        if (planoSim.checked && !document.getElementById('plano').value.trim()) {
+            mostrarErro(document.getElementById('plano'), 'Informe o nome do plano atual');
+            valido = false;
+        }
+
+        return valido;
     }
 
     // Envio do formulário
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            if (!validarFormulario() || !lgpdCheckbox.checked) {
+                if (!lgpdCheckbox.checked) {
+                    alert('Você precisa aceitar a política de privacidade!');
+                }
+                return;
+            }
+
             loadingSpinner.style.display = 'block';
             submitBtn.style.display = 'none';
             
             const formData = new FormData(form);
             formData.set('parceiro', parceiroNome);
 
-            // Captura valor do plano
             const temPlano = document.querySelector('input[name="temPlano"]:checked')?.value || 'Não';
             formData.set('temPlano', temPlano);
-            if (temPlano === 'Não') formData.set('plano', '');
+            formData.set('plano', temPlano === 'Sim' ? document.getElementById('plano').value : '');
 
             try {
-                // Envia para Google Sheets
                 const response = await fetch('https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec', {
                     method: 'POST',
                     body: formData,
                 });
                 
                 const result = await response.text();
-                console.log('Resposta do servidor:', result);
-
+                
                 if (result.toLowerCase().includes('ok')) {
-                    // Redireciona para WhatsApp
                     const nome = formData.get('nome');
                     const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!#Form`;
                     const urlZap = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
                     window.location.href = urlZap;
 
-                    // Reset do formulário
                     form.reset();
                     campoPlano.style.display = 'none';
-                    if (lgpdCheckbox) lgpdCheckbox.checked = false;
-
+                    lgpdCheckbox.checked = false;
                 } else {
                     alert('Erro no servidor: ' + result);
                 }

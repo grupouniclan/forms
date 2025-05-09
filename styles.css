@@ -1,13 +1,14 @@
 :root {
-  --primary-color: #c8102e; /* Vermelho principal da empresa */
-  --secondary-color: #ffffff; /* Branco */
-  --accent-color: #a3001f; /* Vermelho escuro para hover */
-  --text-color: #1a1a1a; /* Cinza escuro para texto */
-  --background-color: #c8102e; /* Fundo claro */
-  --border-color: #dcdcdc; /* Cor de borda */
-  --shadow-color: rgba(0, 0, 0, 0.15); /* Sombra suave */
-  --success-color: #28a745; /* Verde para mensagens de sucesso */
-  --danger-color: #dc3545; /* Vermelho para erros */
+  --primary-color: #c8102e;
+  --secondary-color: #ffffff;
+  --accent-color: #a3001f;
+  --text-color: #1a1a1a;
+  --background-color: #c8102e;
+  --border-color: #dcdcdc;
+  --shadow-color: rgba(0, 0, 0, 0.15);
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --dark-color: #1a1a1a;
 }
 
 * {
@@ -17,7 +18,9 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 
+              BlinkMacSystemFont, 'Segoe UI', Roboto, 
+              'Helvetica Neue', sans-serif;
   line-height: 1.7;
   color: var(--text-color);
   background-color: var(--background-color);
@@ -39,6 +42,7 @@ body {
   width: 100%;
   margin-bottom: 20px;
 }
+
 .banner-topo img.banner-img {
   width: 100%;
   height: auto;
@@ -55,6 +59,7 @@ body {
   font-size: 0.95rem;
   border-left: 4px solid var(--primary-color);
 }
+
 .welcome-message i {
   color: var(--primary-color);
   margin-right: 10px;
@@ -64,12 +69,14 @@ body {
 .form-group {
   margin-bottom: 20px;
 }
+
 .form-group label {
   display: block;
   margin-bottom: 6px;
   font-weight: 500;
   color: var(--text-color);
 }
+
 .required::after {
   content: " *";
   color: var(--danger-color);
@@ -89,12 +96,14 @@ textarea {
   background-color: var(--secondary-color);
   text-transform: none;
 }
+
 input:focus,
 textarea:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.15);
   outline: none;
 }
+
 textarea {
   height: 100px;
   resize: vertical;
@@ -107,11 +116,13 @@ textarea {
   align-items: center;
   margin-top: 10px;
 }
+
 .radio-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 input[type="radio"] {
   accent-color: var(--primary-color);
 }
@@ -121,6 +132,7 @@ input[type="radio"] {
   margin-top: 25px;
   text-align: center;
 }
+
 button {
   background-color: var(--primary-color);
   color: var(--secondary-color);
@@ -132,11 +144,13 @@ button {
   font-weight: 600;
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
+
 button:hover {
   background-color: var(--accent-color);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--shadow-color);
 }
+
 button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
@@ -149,10 +163,12 @@ button:disabled {
   margin-top: 12px;
   display: none;
 }
+
 .loading-spinner i {
   margin-right: 8px;
   animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -161,67 +177,92 @@ button:disabled {
 /* MODAIS */
 .modal {
   display: none;
-}
-
-
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-    background-color: white;
-    margin: 5% auto;
-    padding: 25px;
-    border-radius: 8px;
-    max-width: 600px;
-    position: relative;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+  background-color: white;
+  margin: 5% auto;
+  padding: 25px;
+  border-radius: 8px;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
 }
 
 .close-modal {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--secondary-color);
-    cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .close-modal:hover {
-    color: var(--dark-color);
+  color: var(--accent-color);
 }
 
 .modal h3 {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    font-size: 22px;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  font-size: 22px;
 }
 
 .modal-body {
-    max-height: 60vh;
-    overflow-y: auto;
-    padding-right: 10px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 .modal-body p {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .modal-body ul {
-    margin-bottom: 15px;
-    padding-left: 20px;
+  margin-bottom: 15px;
+  padding-left: 20px;
 }
 
+/* VALIDAÇÃO */
+.campo-invalido input:not([type="radio"]),
+.campo-invalido textarea {
+  border: 2px solid var(--danger-color) !important;
+  animation: tremor 0.3s ease;
+  background-color: #fff5f5;
+}
 
+.campo-invalido .erro-validacao {
+  color: var(--danger-color);
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+  padding: 5px;
+  background: #fff0f0;
+  border-radius: 4px;
+}
+
+.radio-group.campo-invalido {
+  border: 2px solid var(--danger-color);
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 5px;
+  background-color: #fff5f5;
+}
+
+@keyframes tremor {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+}
 
 /* RESPONSIVIDADE */
 @media (max-width: 600px) {
@@ -229,13 +270,30 @@ button:disabled {
     padding: 20px;
     margin: 10px;
   }
+  
   button {
     width: 100%;
     padding: 10px;
   }
 }
 
+@media (max-width: 480px) {
+  .erro-validacao {
+    font-size: 0.8rem;
+    padding: 3px;
+  }
+  
+  .radio-group {
+    gap: 6px;
+  }
+  
+  .modal-content {
+    margin: 10% auto;
+    width: 90%;
+  }
+}
 
+/* RADIO OPTIONS */
 .radio-option {
   display: flex;
   align-items: center;
