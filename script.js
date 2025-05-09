@@ -57,54 +57,106 @@ document.addEventListener('DOMContentLoaded', function () {
     // Controle do campo de plano
     function toggleCampoPlano() {
         campoPlano.style.display = planoSim.checked ? 'block' : 'none';
+        if (planoSim.checked) {
+            document.getElementById('plano').required = true;
+        } else {
+            document.getElementById('plano').required = false;
+        }
     }
 
     if (planoSim && planoNao && campoPlano) {
-        // Configura estado inicial
         toggleCampoPlano();
-        
-        // Adiciona listeners
         planoSim.addEventListener('change', toggleCampoPlano);
         planoNao.addEventListener('change', toggleCampoPlano);
+    }
+
+    // Função de validação
+    function validarFormulario() {
+        let valido = true;
+        const camposObrigatorios = [
+            { id: 'nome', mensagem: 'Por favor, preencha seu nome completo' },
+            { id: 'email', mensagem: 'O e-mail é obrigatório' },
+            { id: 'telefone', mensagem: 'Telefone incompleto' },
+            { id: 'temPlano', mensagem: 'Selecione se possui plano de saúde' }
+        ];
+
+        // Valida campos básicos
+        camposObrigatorios.forEach(campo => {
+            const elemento = document.getElementById(campo.id);
+            
+            if (elemento.type === 'radio') {
+                const checked = document.querySelector(`input[name="${campo.id}"]:checked`);
+                if (!checked) {
+                    alert(campo.mensagem);
+                    valido = false;
+                }
+            } else {
+                if (!elemento.value.trim()) {
+                    alert(campo.mensagem);
+                    elemento.focus();
+                    valido = false;
+                    return;
+                }
+            }
+        });
+
+        // Validação especial do telefone
+        const telefone = document.getElementById('telefone');
+        if (!telefone.value || !$('#telefone').mask.mask.isComplete()) {
+            alert('Telefone incompleto');
+            telefone.focus();
+            valido = false;
+        }
+
+        // Validação do plano de saúde
+        if (planoSim.checked && !document.getElementById('plano').value.trim()) {
+            alert('Informe o nome do seu plano atual');
+            document.getElementById('plano').focus();
+            valido = false;
+        }
+
+        return valido;
     }
 
     // Envio do formulário
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            if (!validarFormulario() || !lgpdCheckbox.checked) {
+                if (!lgpdCheckbox.checked) {
+                    alert('Você precisa aceitar a política de privacidade');
+                }
+                return;
+            }
+
             loadingSpinner.style.display = 'block';
             submitBtn.style.display = 'none';
             
             const formData = new FormData(form);
             formData.set('parceiro', parceiroNome);
 
-            // Captura valor do plano
             const temPlano = document.querySelector('input[name="temPlano"]:checked')?.value || 'Não';
             formData.set('temPlano', temPlano);
-            if (temPlano === 'Não') formData.set('plano', '');
+            formData.set('plano', temPlano === 'Sim' ? document.getElementById('plano').value : '');
 
             try {
-                // Envia para Google Sheets
                 const response = await fetch('https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec', {
                     method: 'POST',
                     body: formData,
                 });
                 
                 const result = await response.text();
-                console.log('Resposta do servidor:', result);
-
+                
                 if (result.toLowerCase().includes('ok')) {
-                    // Redireciona para WhatsApp
                     const nome = formData.get('nome');
-                    const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!#Form`;
+                    const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!`;
                     const urlZap = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
                     window.location.href = urlZap;
 
-                    // Reset do formulário
                     form.reset();
                     campoPlano.style.display = 'none';
-                    if (lgpdCheckbox) lgpdCheckbox.checked = false;
-
+                    lgpdCheckbox.checked = false;
                 } else {
                     alert('Erro no servidor: ' + result);
                 }
