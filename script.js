@@ -45,128 +45,144 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('click', (e) => {
         if (e.target === lgpdModal) lgpdModal.style.display = 'none';
     });
-    // ========== VALIDAÇÃO COMPLETA DO FORMULÁRIO ==========
-function validarFormulario() {
-    let todosPreenchidos = true;
 
-    // Verificar campos textuais obrigatórios
-    const camposTextoObrigatorios = [
-        '#nome', '#telefone', '#cidade', '#email'
-    ];
+    // ========== FUNÇÕES DE VALIDAÇÃO ==========
+    function validarFormulario() {
+        let todosPreenchidos = true;
+        limparTodosErros();
 
-    camposTextoObrigatorios.forEach(seletor => {
-        const campo = document.querySelector(seletor);
-        if (!campo.value.trim()) {
+        // Validação de campos textuais
+        const camposObrigatorios = ['#nome', '#telefone', '#cidade', '#email'];
+        camposObrigatorios.forEach(seletor => {
+            const campo = form.querySelector(seletor);
+            if (!campo.value.trim()) {
+                mostrarErro(campo, 'Este campo é obrigatório');
+                todosPreenchidos = false;
+            }
+        });
+
+        // Validação específica do telefone
+        const telefone = form.querySelector('#telefone');
+        if (telefone.value.replace(/\D/g, '').length < 11) {
+            mostrarErro(telefone, 'Telefone incompleto');
             todosPreenchidos = false;
-            mostrarErro(campo, 'Este campo é obrigatório');
-        } else {
-            limparErro(campo);
         }
-    });
 
-    // Verificação especial do telefone
-    const telefone = document.querySelector('#telefone');
-    if (telefone.value.replace(/\D/g, '').length < 11) {
-        todosPreenchidos = false;
-        mostrarErro(telefone, 'Telefone incompleto');
-    }
-
-    // Verificar grupos de rádio obrigatórios
-    const gruposRadioObrigatorios = [
-        'input[name="temPlano"]',
-        'input[name="conheceu"]',
-        'input[name="contato"]'
-    ];
-
-    gruposRadioObrigatorios.forEach(grupo => {
-        const checked = document.querySelector(`${grupo}:checked`);
-        if (!checked) {
+        // Validação de e-mail
+        const email = form.querySelector('#email');
+        if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+            mostrarErro(email, 'E-mail inválido');
             todosPreenchidos = false;
-            const primeiroElemento = document.querySelector(grupo);
-            mostrarErro(primeiroElemento.closest('.form-group'), 'Selecione uma opção');
         }
-    });
 
-    // Validação condicional do plano
-    if (planoSim.checked) {
-        const inputPlano = campoPlano.querySelector('input');
-        if (!inputPlano.value.trim()) {
-            todosPreenchidos = false;
-            mostrarErro(inputPlano, 'Informe o nome do plano');
+        // Validação de grupos de rádio
+        const gruposRadio = [
+            { name: 'temPlano', msg: 'Selecione se possui plano' },
+            { name: 'conheceu', msg: 'Selecione como conheceu' },
+            { name: 'contato', msg: 'Selecione o contato preferido' }
+        ];
+
+        gruposRadio.forEach(grupo => {
+            const selecionado = form.querySelector(`input[name="${grupo.name}"]:checked`);
+            if (!selecionado) {
+                const container = form.querySelector(`input[name="${grupo.name}"]`).closest('.form-group');
+                mostrarErro(container, grupo.msg);
+                todosPreenchidos = false;
+            }
+        });
+
+        // Validação condicional do plano
+        if (planoSim.checked) {
+            const inputPlano = campoPlano.querySelector('input');
+            if (!inputPlano.value.trim()) {
+                mostrarErro(inputPlano, 'Informe o nome do plano');
+                todosPreenchidos = false;
+            }
+        }
+
+        return todosPreenchidos;
+    }
+
+    function mostrarErro(elemento, mensagem) {
+        const container = elemento.closest('.form-group');
+        const errorDiv = container.querySelector('.error-message');
+        if (errorDiv) {
+            errorDiv.textContent = mensagem;
+            container.classList.add('erro');
         }
     }
 
-    return todosPreenchidos;
-}
-
-// Funções auxiliares para mostrar/limpar erros
-function mostrarErro(elemento, mensagem) {
-    const container = elemento.closest('.form-group');
-    const errorDiv = container.querySelector('.error-message');
-    if (errorDiv) {
-        errorDiv.textContent = mensagem;
-        container.classList.add('erro');
+    function limparErro(elemento) {
+        const container = elemento.closest('.form-group');
+        if (container) {
+            const errorDiv = container.querySelector('.error-message');
+            if (errorDiv) errorDiv.textContent = '';
+            container.classList.remove('erro');
+        }
     }
-}
 
-function limparErro(elemento) {
-    const container = elemento.closest('.form-group');
-    const errorDiv = container.querySelector('.error-message');
-    if (errorDiv) {
-        errorDiv.textContent = '';
-        container.classList.remove('erro');
+    function limparTodosErros() {
+        form.querySelectorAll('.form-group').forEach(container => {
+            container.classList.remove('erro');
+            const errorDiv = container.querySelector('.error-message');
+            if (errorDiv) errorDiv.textContent = '';
+        });
     }
-}
 
-function atualizarBotaoEnvio() {
-    const formValido = validarFormulario();
-    const lgpdAceito = lgpdCheckbox.checked;
-    
-    submitBtn.disabled = !(formValido && lgpdAceito);
-    
-    // Feedback visual adicional
-    submitBtn.title = formValido ? '' : 'Preencha todos os campos obrigatórios';
-}
+    function atualizarBotaoEnvio() {
+        const formValido = validarFormulario();
+        const lgpdAceito = lgpdCheckbox.checked;
+        submitBtn.disabled = !(formValido && lgpdAceito);
+    }
 
-// Configurar listeners de validação
-if (form) {
-    // Validar ao interagir com campos
-    form.addEventListener('input', function(e) {
-        const elemento = e.target;
-        limparErro(elemento);
-        atualizarBotaoEnvio();
-    });
-
-    // Validar ao alterar radios
-    form.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            limparErro(radio.closest('.form-group'));
+    // ========== EVENTOS DE VALIDAÇÃO ==========
+    if (form) {
+        // Validação em tempo real
+        form.addEventListener('input', function(e) {
+            limparErro(e.target);
             atualizarBotaoEnvio();
         });
-    });
-    
-    // Validar inicialmente
-    atualizarBotaoEnvio();
-}
 
-    // Controle do campo de plano
+        // Validação de radios
+        form.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const container = radio.closest('.form-group');
+                limparErro(container);
+                atualizarBotaoEnvio();
+            });
+        });
+
+        // Validação inicial
+        atualizarBotaoEnvio();
+    }
+
+    // ========== CONTROLE DO CAMPO DE PLANO ==========
     function toggleCampoPlano() {
         campoPlano.style.display = planoSim.checked ? 'block' : 'none';
+        if (!planoSim.checked) campoPlano.querySelector('input').value = '';
+        atualizarBotaoEnvio();
     }
 
     if (planoSim && planoNao && campoPlano) {
-        // Configura estado inicial
         toggleCampoPlano();
-        
-        // Adiciona listeners
         planoSim.addEventListener('change', toggleCampoPlano);
         planoNao.addEventListener('change', toggleCampoPlano);
     }
 
-    // Envio do formulário
+    // ========== ENVIO DO FORMULÁRIO ==========
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Validação final
+            const formValido = validarFormulario();
+            const lgpdAceito = lgpdCheckbox.checked;
+            
+            if (!formValido || !lgpdAceito) {
+                alert('Por favor, preencha todos os campos obrigatórios corretamente e aceite a política de privacidade!');
+                return;
+            }
+
             loadingSpinner.style.display = 'block';
             submitBtn.style.display = 'none';
             
@@ -186,8 +202,7 @@ if (form) {
                 });
                 
                 const result = await response.text();
-                console.log('Resposta do servidor:', result);
-
+                
                 if (result.toLowerCase().includes('ok')) {
                     // Redireciona para WhatsApp
                     const nome = formData.get('nome');
