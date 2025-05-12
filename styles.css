@@ -255,3 +255,29 @@ button:disabled {
   gap: 8px;
   margin-bottom: 8px;
 }
+
+
+
+/* ESTILOS DE ERRO */
+.form-group.erro {
+    border-left: 3px solid #ff4444;
+    padding-left: 10px;
+}
+
+.form-group.erro label {
+    color: #ff4444;
+}
+
+.form-group.erro input,
+.form-group.erro textarea {
+    border-color: #ff4444;
+    background-color: #fff6f6;
+}
+
+.error-message {
+    color: #ff4444;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+}
+
