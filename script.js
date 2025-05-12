@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.set('plano', temPlano === 'Sim' ? document.getElementById('plano').value : '');
 
             try {
-                const response = await fetch('SUA_URL_DO_GOOGLE_SCRIPT', {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec', {
                     method: 'POST',
                     body: formData,
                 });
