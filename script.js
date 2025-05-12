@@ -45,31 +45,77 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('click', (e) => {
         if (e.target === lgpdModal) lgpdModal.style.display = 'none';
     });
-
-// ========== VALIDAÇÃO COMPLETA DO FORMULÁRIO ==========
+    // ========== VALIDAÇÃO COMPLETA DO FORMULÁRIO ==========
 function validarFormulario() {
-    // Verifica todos os campos obrigatórios
-    const camposObrigatorios = form.querySelectorAll('[required]');
     let todosPreenchidos = true;
-    
-    camposObrigatorios.forEach(campo => {
-        // Verifica campos de texto e selects
-        if (campo.type !== 'radio' && campo.type !== 'checkbox' && !campo.value.trim()) {
+
+    // Verificar campos textuais obrigatórios
+    const camposTextoObrigatorios = [
+        '#nome', '#telefone', '#cidade', '#email'
+    ];
+
+    camposTextoObrigatorios.forEach(seletor => {
+        const campo = document.querySelector(seletor);
+        if (!campo.value.trim()) {
             todosPreenchidos = false;
-        }
-        
-        // Verificação específica para telefone com máscara completa
-        if (campo.id === 'telefone' && campo.value.replace(/\D/g, '').length < 11) {
-            todosPreenchidos = false;
+            mostrarErro(campo, 'Este campo é obrigatório');
+        } else {
+            limparErro(campo);
         }
     });
 
-    // Verificação condicional do campo plano
-    if (planoSim.checked && !campoPlano.querySelector('input').value.trim()) {
+    // Verificação especial do telefone
+    const telefone = document.querySelector('#telefone');
+    if (telefone.value.replace(/\D/g, '').length < 11) {
         todosPreenchidos = false;
+        mostrarErro(telefone, 'Telefone incompleto');
+    }
+
+    // Verificar grupos de rádio obrigatórios
+    const gruposRadioObrigatorios = [
+        'input[name="temPlano"]',
+        'input[name="conheceu"]',
+        'input[name="contato"]'
+    ];
+
+    gruposRadioObrigatorios.forEach(grupo => {
+        const checked = document.querySelector(`${grupo}:checked`);
+        if (!checked) {
+            todosPreenchidos = false;
+            const primeiroElemento = document.querySelector(grupo);
+            mostrarErro(primeiroElemento.closest('.form-group'), 'Selecione uma opção');
+        }
+    });
+
+    // Validação condicional do plano
+    if (planoSim.checked) {
+        const inputPlano = campoPlano.querySelector('input');
+        if (!inputPlano.value.trim()) {
+            todosPreenchidos = false;
+            mostrarErro(inputPlano, 'Informe o nome do plano');
+        }
     }
 
     return todosPreenchidos;
+}
+
+// Funções auxiliares para mostrar/limpar erros
+function mostrarErro(elemento, mensagem) {
+    const container = elemento.closest('.form-group');
+    const errorDiv = container.querySelector('.error-message');
+    if (errorDiv) {
+        errorDiv.textContent = mensagem;
+        container.classList.add('erro');
+    }
+}
+
+function limparErro(elemento) {
+    const container = elemento.closest('.form-group');
+    const errorDiv = container.querySelector('.error-message');
+    if (errorDiv) {
+        errorDiv.textContent = '';
+        container.classList.remove('erro');
+    }
 }
 
 function atualizarBotaoEnvio() {
@@ -78,22 +124,28 @@ function atualizarBotaoEnvio() {
     
     submitBtn.disabled = !(formValido && lgpdAceito);
     
-    // Feedback visual adicional se necessário
-    if (!formValido && lgpdAceito) {
-        submitBtn.title = 'Preencha todos os campos obrigatórios';
-    } else {
-        submitBtn.title = '';
-    }
+    // Feedback visual adicional
+    submitBtn.title = formValido ? '' : 'Preencha todos os campos obrigatórios';
 }
 
-if (lgpdCheckbox && submitBtn) {
-    // Valida em qualquer alteração no formulário
-    form.addEventListener('input', atualizarBotaoEnvio);
+// Configurar listeners de validação
+if (form) {
+    // Validar ao interagir com campos
+    form.addEventListener('input', function(e) {
+        const elemento = e.target;
+        limparErro(elemento);
+        atualizarBotaoEnvio();
+    });
+
+    // Validar ao alterar radios
+    form.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            limparErro(radio.closest('.form-group'));
+            atualizarBotaoEnvio();
+        });
+    });
     
-    // Valida também no change do checkbox LGPD
-    lgpdCheckbox.addEventListener('change', atualizarBotaoEnvio);
-    
-    // Validação inicial
+    // Validar inicialmente
     atualizarBotaoEnvio();
 }
 
