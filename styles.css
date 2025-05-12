@@ -27,7 +27,6 @@ body {
   padding: 20px;
 }
 
-/* CONTAINER DO FORMULÁRIO */
 .form-container {
   background-color: var(--secondary-color);
   border-radius: 12px;
@@ -37,7 +36,6 @@ body {
   margin: 20px auto;
 }
 
-/* BANNER */
 .banner-topo {
   width: 100%;
   margin-bottom: 20px;
@@ -50,7 +48,6 @@ body {
   display: block;
 }
 
-/* MENSAGEM DE BOAS-VINDAS */
 .welcome-message {
   background-color: rgba(200, 16, 46, 0.08);
   padding: 15px 20px;
@@ -65,7 +62,6 @@ body {
   margin-right: 10px;
 }
 
-/* GRUPOS DE CAMPOS */
 .form-group {
   margin-bottom: 20px;
 }
@@ -82,7 +78,6 @@ body {
   color: var(--danger-color);
 }
 
-/* CAMPOS DE ENTRADA */
 input[type="text"],
 input[type="tel"],
 input[type="email"],
@@ -94,7 +89,6 @@ textarea {
   font-size: 0.95rem;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   background-color: var(--secondary-color);
-  text-transform: none;
 }
 
 input:focus,
@@ -109,25 +103,17 @@ textarea {
   resize: vertical;
 }
 
-/* RADIO BUTTONS */
-.radio-inline {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  margin-top: 10px;
-}
-
 .radio-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 10px;
 }
 
 input[type="radio"] {
   accent-color: var(--primary-color);
 }
 
-/* BOTÃO DE ENVIO */
 .form-actions {
   margin-top: 25px;
   text-align: center;
@@ -142,10 +128,10 @@ button {
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background-color: var(--accent-color);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--shadow-color);
@@ -154,10 +140,9 @@ button:hover {
 button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
-  transform: none;
+  opacity: 0.7;
 }
 
-/* SPINNER DE CARREGAMENTO */
 .loading-spinner {
   color: var(--primary-color);
   margin-top: 12px;
@@ -174,7 +159,6 @@ button:disabled {
   100% { transform: rotate(360deg); }
 }
 
-/* MODAIS */
 .modal {
   display: none;
   position: fixed;
@@ -223,16 +207,6 @@ button:disabled {
   padding-right: 10px;
 }
 
-.modal-body p {
-  margin-bottom: 15px;
-}
-
-.modal-body ul {
-  margin-bottom: 15px;
-  padding-left: 20px;
-}
-
-/* VALIDAÇÃO */
 .campo-invalido input:not([type="radio"]),
 .campo-invalido textarea {
   border: 2px solid var(--danger-color) !important;
@@ -260,11 +234,10 @@ button:disabled {
 
 @keyframes tremor {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(3px); }
-  75% { transform: translateX(-3px); }
+  25% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
 }
 
-/* RESPONSIVIDADE */
 @media (max-width: 600px) {
   .form-container {
     padding: 20px;
@@ -273,36 +246,12 @@ button:disabled {
   
   button {
     width: 100%;
-    padding: 10px;
   }
 }
 
-@media (max-width: 480px) {
-  .erro-validacao {
-    font-size: 0.8rem;
-    padding: 3px;
-  }
-  
-  .radio-group {
-    gap: 6px;
-  }
-  
-  .modal-content {
-    margin: 10% auto;
-    width: 90%;
-  }
-}
-
-/* RADIO OPTIONS */
 .radio-option {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
-}
-
-.radio-option label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
