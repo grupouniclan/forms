@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (result.toLowerCase().includes('ok')) {
                     // Redireciona para WhatsApp
                     const nome = formData.get('nome');
-                    const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!#Form`;
+                    const mensagem = `Oi Grupo Uniclan, meu nome é ${nome.toUpperCase()} e quero saber mais sobre o plano!`;
                     const urlZap = `https://wa.me/551433022681?text=${encodeURIComponent(mensagem)}`;
                     window.location.href = urlZap;
 
