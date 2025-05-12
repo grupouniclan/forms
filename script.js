@@ -46,13 +46,56 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === lgpdModal) lgpdModal.style.display = 'none';
     });
 
-    // Validação LGPD
-    if (lgpdCheckbox && submitBtn) {
-        submitBtn.disabled = true;
-        lgpdCheckbox.addEventListener('change', () => {
-            submitBtn.disabled = !lgpdCheckbox.checked;
-        });
+// ========== VALIDAÇÃO COMPLETA DO FORMULÁRIO ==========
+function validarFormulario() {
+    // Verifica todos os campos obrigatórios
+    const camposObrigatorios = form.querySelectorAll('[required]');
+    let todosPreenchidos = true;
+    
+    camposObrigatorios.forEach(campo => {
+        // Verifica campos de texto e selects
+        if (campo.type !== 'radio' && campo.type !== 'checkbox' && !campo.value.trim()) {
+            todosPreenchidos = false;
+        }
+        
+        // Verificação específica para telefone com máscara completa
+        if (campo.id === 'telefone' && campo.value.replace(/\D/g, '').length < 11) {
+            todosPreenchidos = false;
+        }
+    });
+
+    // Verificação condicional do campo plano
+    if (planoSim.checked && !campoPlano.querySelector('input').value.trim()) {
+        todosPreenchidos = false;
     }
+
+    return todosPreenchidos;
+}
+
+function atualizarBotaoEnvio() {
+    const formValido = validarFormulario();
+    const lgpdAceito = lgpdCheckbox.checked;
+    
+    submitBtn.disabled = !(formValido && lgpdAceito);
+    
+    // Feedback visual adicional se necessário
+    if (!formValido && lgpdAceito) {
+        submitBtn.title = 'Preencha todos os campos obrigatórios';
+    } else {
+        submitBtn.title = '';
+    }
+}
+
+if (lgpdCheckbox && submitBtn) {
+    // Valida em qualquer alteração no formulário
+    form.addEventListener('input', atualizarBotaoEnvio);
+    
+    // Valida também no change do checkbox LGPD
+    lgpdCheckbox.addEventListener('change', atualizarBotaoEnvio);
+    
+    // Validação inicial
+    atualizarBotaoEnvio();
+}
 
     // Controle do campo de plano
     function toggleCampoPlano() {
