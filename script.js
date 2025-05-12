@@ -64,30 +64,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === lgpdModal) lgpdModal.style.display = 'none';
     });
 
-    // Validação LGPD
-    if (lgpdCheckbox && submitBtn) {
-        submitBtn.disabled = true;
-        lgpdCheckbox.addEventListener('change', () => {
-            submitBtn.disabled = !lgpdCheckbox.checked;
-        });
-    }
-
-    // Controle do campo de plano
-    function toggleCampoPlano() {
-        campoPlano.style.display = planoSim.checked ? 'block' : 'none';
-        document.getElementById('plano').required = planoSim.checked;
-    }
-
-    if (planoSim && planoNao && campoPlano) {
-        toggleCampoPlano();
-        planoSim.addEventListener('change', toggleCampoPlano);
-        planoNao.addEventListener('change', toggleCampoPlano);
-    }
-
     // Sistema de validação
+    let validacaoAtiva = false;
+
     function validarCampo(elemento) {
         if (elemento.id === 'telefone') {
             return $('#telefone').mask.mask.isComplete();
+        }
+        if (elemento.id === 'email') {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(elemento.value.trim());
         }
         return elemento.value.trim() !== '';
     }
@@ -97,27 +82,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarErro(elemento, mensagem) {
-        elemento.classList.add('campo-invalido');
-        const erro = document.createElement('span');
-        erro.className = 'erro-validacao';
-        erro.textContent = mensagem;
-        elemento.parentNode.insertBefore(erro, elemento.nextSibling);
-    }
-
-    function mostrarErroRadio(radios, mensagem) {
-        const container = radios[0].closest('.form-group');
+        const container = elemento.closest('.form-group');
+        if (!container) return;
+        
         container.classList.add('campo-invalido');
-        const erro = document.createElement('span');
-        erro.className = 'erro-validacao';
+        let erro = container.querySelector('.erro-validacao');
+        
+        if (!erro) {
+            erro = document.createElement('span');
+            erro.className = 'erro-validacao';
+            container.appendChild(erro);
+        }
         erro.textContent = mensagem;
-        container.appendChild(erro);
     }
 
     function resetarErros() {
         document.querySelectorAll('.campo-invalido').forEach(el => {
             el.classList.remove('campo-invalido');
-            const erros = el.querySelectorAll('.erro-validacao');
-            erros.forEach(erro => erro.remove());
+            const erro = el.querySelector('.erro-validacao');
+            if (erro) erro.remove();
         });
     }
 
@@ -129,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (campo.tipo === 'radio') {
                 const radios = document.getElementsByName(campo.name);
                 if (!validarRadio(radios)) {
-                    mostrarErroRadio(radios, campo.mensagem);
+                    mostrarErro(radios[0].closest('.form-group'), campo.mensagem);
                     valido = false;
                 }
             } else {
@@ -149,17 +132,62 @@ document.addEventListener('DOMContentLoaded', function () {
         return valido;
     }
 
+    // Controle de estado do botão
+    function atualizarEstadoEnvio() {
+        const lgpdAceito = lgpdCheckbox.checked;
+        const formularioValido = validarFormulario();
+        
+        submitBtn.disabled = !(lgpdAceito && formularioValido);
+    }
+
+    // Gerenciamento de listeners
+    function gerenciarListeners(ativar) {
+        CAMPOS_OBRIGATORIOS.forEach(campo => {
+            if (campo.tipo === 'radio') {
+                document.getElementsByName(campo.name).forEach(radio => {
+                    radio[ativar ? 'addEventListener' : 'removeEventListener']('change', atualizarEstadoEnvio);
+                });
+            } else {
+                const elemento = document.getElementById(campo.id);
+                elemento[ativar ? 'addEventListener' : 'removeEventListener']('input', atualizarEstadoEnvio);
+            }
+        });
+
+        const planoCampo = document.getElementById('plano');
+        planoCampo[ativar ? 'addEventListener' : 'removeEventListener']('input', atualizarEstadoEnvio);
+    }
+
+    // Controle do LGPD
+    lgpdCheckbox.addEventListener('change', () => {
+        if (lgpdCheckbox.checked) {
+            gerenciarListeners(true);
+            atualizarEstadoEnvio();
+        } else {
+            gerenciarListeners(false);
+            submitBtn.disabled = true;
+            resetarErros();
+        }
+    });
+
+    // Controle do campo de plano
+    function toggleCampoPlano() {
+        campoPlano.style.display = planoSim.checked ? 'block' : 'none';
+        document.getElementById('plano').required = planoSim.checked;
+        if (validacaoAtiva) atualizarEstadoEnvio();
+    }
+
+    if (planoSim && planoNao && campoPlano) {
+        toggleCampoPlano();
+        planoSim.addEventListener('change', toggleCampoPlano);
+        planoNao.addEventListener('change', toggleCampoPlano);
+    }
+
     // Envio do formulário
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (!validarFormulario() || !lgpdCheckbox.checked) {
-                if (!lgpdCheckbox.checked) {
-                    alert('Você precisa aceitar a política de privacidade!');
-                }
-                return;
-            }
+            if (!lgpdCheckbox.checked || !validarFormulario()) return;
 
             loadingSpinner.style.display = 'block';
             submitBtn.style.display = 'none';
@@ -172,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.set('plano', temPlano === 'Sim' ? document.getElementById('plano').value : '');
 
             try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec', {
+                const response = await fetch('SUA_URL_DO_GOOGLE_SCRIPT', {
                     method: 'POST',
                     body: formData,
                 });
@@ -188,6 +216,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     form.reset();
                     campoPlano.style.display = 'none';
                     lgpdCheckbox.checked = false;
+                    gerenciarListeners(false);
+                    submitBtn.disabled = true;
                 } else {
                     alert('Erro no servidor: ' + result);
                 }
@@ -197,8 +227,10 @@ document.addEventListener('DOMContentLoaded', function () {
             } finally {
                 loadingSpinner.style.display = 'none';
                 submitBtn.style.display = 'inline-block';
-                submitBtn.disabled = true;
             }
         });
     }
+
+    // Estado inicial
+    submitBtn.disabled = true;
 });
