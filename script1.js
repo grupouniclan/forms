@@ -2,10 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- IMPORTANTE: SUBSTITUA ESTA URL PELA SUA NOVA URL DO GOOGLE APPS SCRIPT ---
     const googleSheetURL = 'https://script.google.com/macros/s/AKfycbzLYLJDLJr99E0bGyY8zSInEMvmBHkPHKcKbE-G3q-9E5NLDECXArIRtl66FdLemjLhtg/exec';
 
-    // Número de WhatsApp para onde o aviso será enviado (formato: 55DDD9XXXXXXXX)
-    // Ex: 5514999998888
-    const numeroWhatsAppAviso = '5514998023897';
-
     // Elementos DOM
     const form = document.getElementById('uniclanForm');
     const submitBtn = document.getElementById('submit-btn');
@@ -155,15 +151,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result = await response.text();
                 
                 if (result.toLowerCase().includes('ok')) {
-                    const mensagemAviso = `🚨 NOVO CONTATO DE PARCEIRO 🚨%0A%0A*Nome:* ${nome}%0A*Telefone:* ${telefone}%0A*Parceiro:* ${parceiroNome}`;
-                    const urlZapAviso = `https://wa.me/${numeroWhatsAppAviso}?text=${encodeURIComponent(mensagemAviso)}`;
-
-                    window.open(urlZapAviso, '_blank');
-                    
+                    alert('Seus dados foram enviados com sucesso!');
                     form.reset();
                     if (lgpdCheckbox) lgpdCheckbox.checked = false;
-                    
-                    alert('Seus dados foram enviados com sucesso! Fique de olho no WhatsApp.');
                     
                 } else {
                     alert('Erro no servidor: ' + result);
