@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // URL da sua planilha do Google Sheets (a URL do seu Google Apps Script)
-    const googleSheetURL = 'https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec';
+    const googleSheetURL = 'https://script.google.com/macros/s/AKfycbzLYLJDLJr99E0bGyY8zSInEMvmBHkPHKcKbE-G3q-9E5NLDECXArIRtl66FdLemjLhtg/exec';
 
     // Número de WhatsApp para onde o aviso será enviado (formato: 55DDD9XXXXXXXX)
     const numeroWhatsAppAviso = '551433022681'; 
