@@ -1,0 +1,168 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // URL da sua planilha do Google Sheets (a URL do seu Google Apps Script)
+    const googleSheetURL = 'https://script.google.com/macros/s/AKfycbzdOaNdhpGjP-GnqHhPwEOdHnDew-t2ftzEXyauJ--q2tfzDGhES7RAe24BRX1I8LY/exec';
+
+    // Número de WhatsApp para onde o aviso será enviado (formato: 55DDD9XXXXXXXX)
+    const numeroWhatsAppAviso = '551433022681'; 
+
+    // Elementos DOM
+    const form = document.getElementById('uniclanForm');
+    const submitBtn = document.getElementById('submit-btn');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const lgpdCheckbox = document.getElementById('lgpd');
+
+    // Máscara do telefone
+    $('#telefone').mask('(00) 00000-0000');
+
+    // LGPD Modal (mantido)
+    const lgpdLink = document.getElementById('lgpd-link');
+    const lgpdModal = document.getElementById('lgpd-modal');
+    const closeModal = document.querySelector('.close-modal');
+
+    if (lgpdLink && lgpdModal && closeModal) {
+        lgpdLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            lgpdModal.style.display = 'block';
+        });
+
+        closeModal.addEventListener('click', () => {
+            lgpdModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === lgpdModal) lgpdModal.style.display = 'none';
+        });
+    }
+
+    // ========== FUNÇÕES DE VALIDAÇÃO SIMPLIFICADAS ==========
+    function validarFormulario() {
+        let todosPreenchidos = true;
+        limparTodosErros();
+
+        // Validação de campos textuais (apenas nome e telefone)
+        const camposObrigatorios = ['#nome', '#telefone'];
+        camposObrigatorios.forEach(seletor => {
+            const campo = form.querySelector(seletor);
+            if (!campo || !campo.value.trim()) {
+                if (campo) mostrarErro(campo, 'Este campo é obrigatório');
+                todosPreenchidos = false;
+            }
+        });
+
+        // Validação específica do telefone
+        const telefone = form.querySelector('#telefone');
+        if (telefone && telefone.value.replace(/\D/g, '').length < 11) {
+            mostrarErro(telefone, 'Telefone incompleto');
+            todosPreenchidos = false;
+        }
+
+        // Validação da LGPD
+        if (!lgpdCheckbox || !lgpdCheckbox.checked) {
+            const lgpdContainer = lgpdCheckbox.closest('.form-group');
+            if (lgpdContainer) mostrarErro(lgpdContainer, 'Você deve aceitar a política de privacidade');
+            todosPreenchidos = false;
+        }
+
+        return todosPreenchidos;
+    }
+
+    function mostrarErro(elemento, mensagem) {
+        const container = elemento.closest('.form-group');
+        const errorDiv = container.querySelector('.error-message');
+        if (errorDiv) {
+            errorDiv.textContent = mensagem;
+            container.classList.add('erro');
+        }
+    }
+
+    function limparErro(elemento) {
+        const container = elemento.closest('.form-group');
+        if (container) {
+            const errorDiv = container.querySelector('.error-message');
+            if (errorDiv) errorDiv.textContent = '';
+            container.classList.remove('erro');
+        }
+    }
+
+    function limparTodosErros() {
+        form.querySelectorAll('.form-group').forEach(container => {
+            container.classList.remove('erro');
+            const errorDiv = container.querySelector('.error-message');
+            if (errorDiv) errorDiv.textContent = '';
+        });
+    }
+
+    function atualizarBotaoEnvio() {
+        const formValido = validarFormulario();
+        submitBtn.disabled = !formValido;
+    }
+
+    // Eventos de Validação
+    if (form) {
+        form.addEventListener('input', function(e) {
+            limparErro(e.target);
+            atualizarBotaoEnvio();
+        });
+        atualizarBotaoEnvio();
+    }
+
+    // ========== ENVIO DO FORMULÁRIO COM AS NOVAS REGRAS ==========
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!validarFormulario()) {
+                alert('Por favor, preencha todos os campos obrigatórios corretamente.');
+                return;
+            }
+
+            loadingSpinner.style.display = 'block';
+            submitBtn.style.display = 'none';
+
+            try {
+                // Prepara os dados do formulário
+                const nome = form.querySelector('#nome').value;
+                const telefone = form.querySelector('#telefone').value;
+                
+                // Cria um objeto FormData para envio para a planilha
+                const formData = new FormData();
+                formData.append('nome', nome);
+                formData.append('telefone', telefone);
+                formData.append('aba', 'parceiros'); // <--- AQUI ESTÁ A CHAVE!
+
+                // Envia para Google Sheets
+                const response = await fetch(googleSheetURL, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.text();
+                
+                if (result.toLowerCase().includes('ok')) {
+                    // Prepara a mensagem de aviso para o WhatsApp
+                    const mensagemAviso = `🚨 NOVO CONTATO! 🚨%0A%0A*Nome:* ${nome}%0A*Telefone:* ${telefone}`;
+                    const urlZapAviso = `https://wa.me/${numeroWhatsAppAviso}?text=${encodeURIComponent(mensagemAviso)}`;
+
+                    // Abre o WhatsApp para enviar a mensagem de aviso
+                    window.open(urlZapAviso, '_blank');
+
+                    // Reset do formulário
+                    form.reset();
+                    if (lgpdCheckbox) lgpdCheckbox.checked = false;
+                    
+                    alert('Seus dados foram enviados com sucesso! Fique de olho no WhatsApp.');
+
+                } else {
+                    alert('Erro no servidor: ' + result);
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro na conexão. Verifique sua internet.');
+            } finally {
+                loadingSpinner.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+                atualizarBotaoEnvio();
+            }
+        });
+    }
+});
