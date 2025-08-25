@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const googleSheetURL = 'https://script.google.com/macros/s/AKfycbzLYLJDLJr99E0bGyY8zSInEMvmBHkPHKcKbE-G3q-9E5NLDECXArIRtl66FdLemjLhtg/exec';
 
     // Número de WhatsApp para onde o aviso será enviado (formato: 55DDD9XXXXXXXX)
-    const numeroWhatsAppAviso = '551433022681'; 
+    const numeroWhatsAppAviso = '5514998023897'; 
 
     // Elementos DOM
     const form = document.getElementById('uniclanForm');
