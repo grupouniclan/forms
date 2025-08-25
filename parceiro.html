@@ -7,19 +7,17 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>   
-  <!-- IMAGEM DESTAQUE -->
-  <div class="banner-topo">
-    <img src="Fundo.png" alt="Cuidado com a Família" class="banner-img" />
-  </div>
-
-  <!-- FORMULÁRIO -->
-  <div class="form-container">
-    <div class="welcome-message">
-      <p><i class="fas fa-heart"></i> Seja bem-vindo(a) ao Grupo Uniclan!</p>
-      <p>Preencha todos os campos com atenção. Seus dados serão tratados com confidencialidade e segurança, conforme a LGPD.</p>
+<body>
+    <div class="banner-topo">
+        <img src="Fundo.png" alt="Cuidado com a Família" class="banner-img" />
     </div>
-        
+
+    <div class="form-container">
+        <div class="welcome-message">
+            <p><i class="fas fa-heart"></i> Seja bem-vindo(a) ao Grupo Uniclan!</p>
+            <p>Preencha todos os campos com atenção. Seus dados serão tratados com confidencialidade e segurança, conforme a LGPD.</p>
+        </div>
+
         <form id="uniclanForm" novalidate>
             <input type="hidden" id="parceiro" name="parceiro">
             
@@ -35,12 +33,6 @@
                 <div class="error-message" id="telefone-error"></div>
             </div>
             
-            
-
-
-
- 
-
             <div class="form-group checkbox-group">
                 <input type="checkbox" id="lgpd" name="lgpd" required>
                 <label for="lgpd">Li e aceito a <a href="#" id="lgpd-link">Política de Privacidade</a> conforme a LGPD</label>
@@ -85,6 +77,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="pscripts.js"></script>
+    <script src="script1.js"></script>
 </body>
 </html>
