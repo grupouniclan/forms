@@ -1,20 +1,22 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // URL da sua planilha do Google Sheets (a URL do seu Google Apps Script)
+    // --- IMPORTANTE: SUBSTITUA ESTA URL PELA SUA NOVA URL DO GOOGLE APPS SCRIPT ---
     const googleSheetURL = 'https://script.google.com/macros/s/AKfycbzLYLJDLJr99E0bGyY8zSInEMvmBHkPHKcKbE-G3q-9E5NLDECXArIRtl66FdLemjLhtg/exec';
 
     // Número de WhatsApp para onde o aviso será enviado (formato: 55DDD9XXXXXXXX)
-    const numeroWhatsAppAviso = '5514998023897'; 
+    // Ex: 5514999998888
+    const numeroWhatsAppAviso = '5514998023897';
 
     // Elementos DOM
     const form = document.getElementById('uniclanForm');
     const submitBtn = document.getElementById('submit-btn');
     const loadingSpinner = document.getElementById('loading-spinner');
     const lgpdCheckbox = document.getElementById('lgpd');
+    const parceiroInput = document.getElementById('parceiro');
 
     // Máscara do telefone
     $('#telefone').mask('(00) 00000-0000');
 
-    // LGPD Modal (mantido)
+    // LGPD Modal
     const lgpdLink = document.getElementById('lgpd-link');
     const lgpdModal = document.getElementById('lgpd-modal');
     const closeModal = document.querySelector('.close-modal');
@@ -34,7 +36,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ========== FUNÇÕES DE VALIDAÇÃO SIMPLIFICADAS ==========
+    // Pega o nome do parceiro da URL (se existir)
+    const urlParams = new URLSearchParams(window.location.search);
+    const parceiroParam = urlParams.get('parceiro');
+    let parceiroNome = 'Anônimo';
+
+    if (parceiroParam) {
+        parceiroNome = decodeURIComponent(parceiroParam);
+        parceiroInput.value = parceiroNome;
+        const parceiroInfo = document.createElement('div');
+        parceiroInfo.className = 'parceiro-info';
+        parceiroInfo.innerHTML = `<i class="fas fa-handshake"></i> Indicado por: <strong>${parceiroNome}</strong>`;
+        const welcomeMessage = document.querySelector('.welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.appendChild(parceiroInfo);
+        }
+    }
+
+    // ========== FUNÇÕES DE VALIDAÇÃO ==========
     function validarFormulario() {
         let todosPreenchidos = true;
         limparTodosErros();
@@ -106,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
         atualizarBotaoEnvio();
     }
 
-    // ========== ENVIO DO FORMULÁRIO COM AS NOVAS REGRAS ==========
+    // ========== ENVIO DO FORMULÁRIO ==========
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -120,17 +139,14 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.style.display = 'none';
 
             try {
-                // Prepara os dados do formulário
                 const nome = form.querySelector('#nome').value;
                 const telefone = form.querySelector('#telefone').value;
                 
-                // Cria um objeto FormData para envio para a planilha
                 const formData = new FormData();
                 formData.append('nome', nome);
                 formData.append('telefone', telefone);
-                formData.append('aba', 'parceiros'); // <--- AQUI ESTÁ A CHAVE!
+                formData.append('parceiro', parceiroNome);
 
-                // Envia para Google Sheets
                 const response = await fetch(googleSheetURL, {
                     method: 'POST',
                     body: formData,
@@ -139,19 +155,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result = await response.text();
                 
                 if (result.toLowerCase().includes('ok')) {
-                    // Prepara a mensagem de aviso para o WhatsApp
-                    const mensagemAviso = `🚨 NOVO CONTATO! 🚨%0A%0A*Nome:* ${nome}%0A*Telefone:* ${telefone}`;
+                    const mensagemAviso = `🚨 NOVO CONTATO DE PARCEIRO 🚨%0A%0A*Nome:* ${nome}%0A*Telefone:* ${telefone}%0A*Parceiro:* ${parceiroNome}`;
                     const urlZapAviso = `https://wa.me/${numeroWhatsAppAviso}?text=${encodeURIComponent(mensagemAviso)}`;
 
-                    // Abre o WhatsApp para enviar a mensagem de aviso
                     window.open(urlZapAviso, '_blank');
-
-                    // Reset do formulário
+                    
                     form.reset();
                     if (lgpdCheckbox) lgpdCheckbox.checked = false;
                     
                     alert('Seus dados foram enviados com sucesso! Fique de olho no WhatsApp.');
-
+                    
                 } else {
                     alert('Erro no servidor: ' + result);
                 }
